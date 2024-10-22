@@ -1,0 +1,610 @@
+{
+    "tables": {
+        "chunks": {
+            "tableName": "chunks",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "unique": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "size": {
+                    "allowNull": true,
+                    "field": "size",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "created_at": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updated_at": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "assignments": {
+            "tableName": "assignments",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "unique": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "size": {
+                    "allowNull": true,
+                    "field": "size",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "chunk_count": {
+                    "allowNull": true,
+                    "field": "chunk_count",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "root_hash": {
+                    "allowNull": true,
+                    "field": "root_hash",
+                    "seqType": "Sequelize.STRING"
+                },
+                "desired_redundancy": {
+                    "allowNull": true,
+                    "field": "desired_redundancy",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "achieved_redundancy": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": 0
+                    },
+                    "field": "achieved_redundancy",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "desired_storage_duration": {
+                    "allowNull": true,
+                    "field": "desired_storage_duration",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "is_active": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "is_active",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "created_at": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updated_at": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "assignment_chunks": {
+            "tableName": "assignment_chunks",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "unique": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "assignment_id": {
+                    "allowNull": false,
+                    "field": "assignment_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "pos": {
+                    "allowNull": true,
+                    "field": "pos",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "chunk_id": {
+                    "allowNull": true,
+                    "field": "chunk_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "created_at": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updated_at": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "AssignmentId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "assignments",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "assignment_id",
+                    "seqType": "Sequelize.STRING"
+                }
+            },
+            "indexes": {
+                "4e57b1cbfa222ca2b43151e26ca19e09e94cddf8": {
+                    "fields": [
+                        "assignment_id",
+                        "pos"
+                    ],
+                    "name": "assignment_chunks_assignment_id_pos",
+                    "options": {
+                        "indexName": "assignment_chunks_assignment_id_pos",
+                        "name": "assignment_chunks_assignment_id_pos"
+                    }
+                }
+            }
+        },
+        "placements": {
+            "tableName": "placements",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "unique": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "assignment_id": {
+                    "allowNull": false,
+                    "field": "assignment_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "provider_id": {
+                    "allowNull": false,
+                    "field": "provider_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "provider_connection_strings": {
+                    "allowNull": true,
+                    "field": "provider_connection_strings",
+                    "seqType": "Sequelize.JSON"
+                },
+                "merkle_root": {
+                    "allowNull": true,
+                    "field": "merkle_root",
+                    "seqType": "Sequelize.STRING"
+                },
+                "merkle_tree": {
+                    "allowNull": true,
+                    "field": "merkle_tree",
+                    "seqType": "Sequelize.JSON"
+                },
+                "process_id": {
+                    "allowNull": true,
+                    "field": "process_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "private_key": {
+                    "allowNull": true,
+                    "field": "private_key",
+                    "seqType": "Sequelize.STRING"
+                },
+                "public_key": {
+                    "allowNull": true,
+                    "field": "public_key",
+                    "seqType": "Sequelize.STRING"
+                },
+                "expires": {
+                    "allowNull": true,
+                    "field": "expires",
+                    "seqType": "Sequelize.BIGINT"
+                },
+                "is_funded": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "is_funded",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "required_reward": {
+                    "allowNull": true,
+                    "field": "required_reward",
+                    "seqType": "Sequelize.BIGINT"
+                },
+                "required_collateral": {
+                    "allowNull": true,
+                    "field": "required_collateral",
+                    "seqType": "Sequelize.BIGINT"
+                },
+                "error_was": {
+                    "allowNull": true,
+                    "field": "error_was",
+                    "seqType": "Sequelize.STRING"
+                },
+                "status": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": "created"
+                    },
+                    "field": "status",
+                    "seqType": "Sequelize.STRING"
+                },
+                "created_at": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updated_at": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "AssignmentId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "assignments",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "assignment_id",
+                    "seqType": "Sequelize.STRING"
+                }
+            },
+            "indexes": []
+        },
+        "placement_chunks": {
+            "tableName": "placement_chunks",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "unique": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "placement_id": {
+                    "allowNull": false,
+                    "field": "placement_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "is_encrypted": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "is_encrypted",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "is_sent": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "is_sent",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "original_chunk_id": {
+                    "allowNull": true,
+                    "field": "original_chunk_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "encrypted_chunk_id": {
+                    "allowNull": true,
+                    "field": "encrypted_chunk_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "original_size": {
+                    "allowNull": true,
+                    "field": "original_size",
+                    "seqType": "Sequelize.BIGINT"
+                },
+                "pos": {
+                    "allowNull": true,
+                    "field": "pos",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "created_at": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updated_at": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "PlacementId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "placements",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "placement_id",
+                    "seqType": "Sequelize.STRING"
+                }
+            },
+            "indexes": {
+                "7524e4218dfc8c9845933d029fc313ec8adf86a6": {
+                    "fields": [
+                        "placement_id"
+                    ],
+                    "name": "placement_chunks_placement_id",
+                    "options": {
+                        "indexName": "placement_chunks_placement_id",
+                        "name": "placement_chunks_placement_id"
+                    }
+                },
+                "bdefefacdbd285bbbe98298050c81d1eb80f8b3d": {
+                    "fields": [
+                        "is_encrypted"
+                    ],
+                    "name": "placement_chunks_is_encrypted",
+                    "options": {
+                        "indexName": "placement_chunks_is_encrypted",
+                        "name": "placement_chunks_is_encrypted"
+                    }
+                },
+                "991cd8cd88d91c9b7803be680f11132988d9eac3": {
+                    "fields": [
+                        "is_sent"
+                    ],
+                    "name": "placement_chunks_is_sent",
+                    "options": {
+                        "indexName": "placement_chunks_is_sent",
+                        "name": "placement_chunks_is_sent"
+                    }
+                },
+                "f14db837036cbe1bb15e2c2d912208a272df0f07": {
+                    "fields": [
+                        "original_chunk_id"
+                    ],
+                    "name": "placement_chunks_original_chunk_id",
+                    "options": {
+                        "indexName": "placement_chunks_original_chunk_id",
+                        "name": "placement_chunks_original_chunk_id"
+                    }
+                },
+                "6dcfb63d3da1bbebdeefcf137704bab085c594fb": {
+                    "fields": [
+                        "encrypted_chunk_id"
+                    ],
+                    "name": "placement_chunks_encrypted_chunk_id",
+                    "options": {
+                        "indexName": "placement_chunks_encrypted_chunk_id",
+                        "name": "placement_chunks_encrypted_chunk_id"
+                    }
+                },
+                "5d4fd286fc3574a9cd7a9e86124120ed1cc60c0c": {
+                    "fields": [
+                        "placement_id",
+                        "pos"
+                    ],
+                    "name": "placement_chunks_placement_id_pos",
+                    "options": {
+                        "indexName": "placement_chunks_placement_id_pos",
+                        "name": "placement_chunks_placement_id_pos"
+                    }
+                },
+                "425f7693fc88e6c3605d235e862f692529a2c0af": {
+                    "fields": [
+                        "placement_id",
+                        "is_sent"
+                    ],
+                    "name": "placement_chunks_placement_id_is_sent",
+                    "options": {
+                        "indexName": "placement_chunks_placement_id_is_sent",
+                        "name": "placement_chunks_placement_id_is_sent"
+                    }
+                }
+            }
+        },
+        "p_s_placements": {
+            "tableName": "p_s_placements",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "unique": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "client_id": {
+                    "allowNull": false,
+                    "field": "client_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "merkle_root": {
+                    "allowNull": true,
+                    "field": "merkle_root",
+                    "seqType": "Sequelize.STRING"
+                },
+                "merkle_tree_full": {
+                    "allowNull": true,
+                    "field": "merkle_tree_full",
+                    "seqType": "Sequelize.JSON"
+                },
+                "process_id": {
+                    "allowNull": true,
+                    "field": "process_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "public_key": {
+                    "allowNull": true,
+                    "field": "public_key",
+                    "seqType": "Sequelize.STRING"
+                },
+                "expires": {
+                    "allowNull": true,
+                    "field": "expires",
+                    "seqType": "Sequelize.BIGINT"
+                },
+                "next_challenge": {
+                    "allowNull": true,
+                    "field": "next_challenge",
+                    "seqType": "Sequelize.DATE"
+                },
+                "is_collaterized": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "is_collaterized",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "status": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": "created"
+                    },
+                    "field": "status",
+                    "seqType": "Sequelize.STRING"
+                },
+                "created_at": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updated_at": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                }
+            },
+            "indexes": []
+        },
+        "p_s_placement_chunks": {
+            "tableName": "p_s_placement_chunks",
+            "schema": {
+                "id": {
+                    "allowNull": false,
+                    "unique": true,
+                    "primaryKey": true,
+                    "field": "id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "placement_id": {
+                    "allowNull": false,
+                    "field": "placement_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "original_chunk_id": {
+                    "allowNull": true,
+                    "field": "original_chunk_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "original_size": {
+                    "allowNull": true,
+                    "field": "original_size",
+                    "seqType": "Sequelize.BIGINT"
+                },
+                "encrypted_chunk_id": {
+                    "allowNull": true,
+                    "field": "encrypted_chunk_id",
+                    "seqType": "Sequelize.STRING"
+                },
+                "is_received": {
+                    "allowNull": false,
+                    "defaultValue": {
+                        "value": false
+                    },
+                    "field": "is_received",
+                    "seqType": "Sequelize.BOOLEAN"
+                },
+                "pos": {
+                    "allowNull": true,
+                    "field": "pos",
+                    "seqType": "Sequelize.INTEGER"
+                },
+                "created_at": {
+                    "allowNull": false,
+                    "field": "created_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "updated_at": {
+                    "allowNull": false,
+                    "field": "updated_at",
+                    "seqType": "Sequelize.DATE"
+                },
+                "PSPlacementId": {
+                    "allowNull": true,
+                    "references": {
+                        "model": "p_s_placements",
+                        "key": "id"
+                    },
+                    "onDelete": "SET NULL",
+                    "onUpdate": "CASCADE",
+                    "field": "p_s_placement_id",
+                    "seqType": "Sequelize.STRING"
+                }
+            },
+            "indexes": {
+                "bd714088a8c5c9de94c45b1221c8cf868a3a6055": {
+                    "fields": [
+                        "placement_id"
+                    ],
+                    "name": "p_s_placement_chunks_placement_id",
+                    "options": {
+                        "indexName": "p_s_placement_chunks_placement_id",
+                        "name": "p_s_placement_chunks_placement_id"
+                    }
+                },
+                "5c34696838a1432326f4fc813dc444e1f39f7c01": {
+                    "fields": [
+                        "original_chunk_id"
+                    ],
+                    "name": "p_s_placement_chunks_original_chunk_id",
+                    "options": {
+                        "indexName": "p_s_placement_chunks_original_chunk_id",
+                        "name": "p_s_placement_chunks_original_chunk_id"
+                    }
+                },
+                "e2fbc23f0c1ed75f7405a62c8e86904dbc0abb93": {
+                    "fields": [
+                        "encrypted_chunk_id"
+                    ],
+                    "name": "p_s_placement_chunks_encrypted_chunk_id",
+                    "options": {
+                        "indexName": "p_s_placement_chunks_encrypted_chunk_id",
+                        "name": "p_s_placement_chunks_encrypted_chunk_id"
+                    }
+                },
+                "62d3cc3e461260bf389704e3d81f2b93a61e4c88": {
+                    "fields": [
+                        "placement_id",
+                        "pos"
+                    ],
+                    "name": "p_s_placement_chunks_placement_id_pos",
+                    "options": {
+                        "indexName": "p_s_placement_chunks_placement_id_pos",
+                        "name": "p_s_placement_chunks_placement_id_pos"
+                    }
+                },
+                "eba0be438817c1e56ab44bd9d75cad56e896944b": {
+                    "fields": [
+                        "placement_id",
+                        "is_received"
+                    ],
+                    "name": "p_s_placement_chunks_placement_id_is_received",
+                    "options": {
+                        "indexName": "p_s_placement_chunks_placement_id_is_received",
+                        "name": "p_s_placement_chunks_placement_id_is_received"
+                    }
+                }
+            }
+        }
+    },
+    "revision": 1
+}
