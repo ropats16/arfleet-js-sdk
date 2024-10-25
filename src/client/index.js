@@ -65,25 +65,6 @@ async function getClientInstance(initialState = null) {
 
 async function getClient() {
 
-    // const wallet = await initWallet();
-    // console.log(wallet);
-    // client = getClientInstance({ wallet: wallet });
-    // console.log("client log main", client);
-    // client.getAssignments().then((assignments) => {
-    //     // console.log(assignments);
-    // })
-    //do this in a promise
-    // const promise = new Promise((resolve, reject) => {
-    //     initWallet().then((wallet) => {
-    //         const client = getClientInstance({ wallet: wallet });
-
-    //         resolve(client);
-    //     });
-    // });
-
-    // // await promise;
-    // return promise;
-
     //resolve and return client
     return new Promise((resolve, reject) => {
         initWallet().then(async (wallet) => {
@@ -102,27 +83,3 @@ async function getClient() {
 }
 
 module.exports = { getClientInstance, getClient };
-
-
-
-// async function test() {
-//     const client = await getClient();
-//     // console.log("done", (await client.getAssignments()));
-// }
-
-// test()
-
-// async function tryClient() {
-//     while (!client) {
-//         // console.log("waiting for client");
-//         await new Promise(resolve => setTimeout(resolve, 1000));
-//     }
-//     // console.log("client log user", client);
-//     client.getAssignments().then((assignments) => {
-//         // console.log(assignments);
-//     })
-// }
-
-
-// fun().then(tryClient());
-// tryClient()
