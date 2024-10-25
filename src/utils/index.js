@@ -5,7 +5,7 @@ const { color } = require('./color');
 
 module.exports = {
     setDataDir: function(path) {
-        process.env.DATADIR = this.resolveHome(path);
+        process.env.DATADIR = module.exports.resolveHome(path);
     },
     getDatadir: function(path) {
         const datadir = process.env.DATADIR;

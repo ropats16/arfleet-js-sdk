@@ -41,3 +41,6 @@ node_modules/
 *.njsproj
 *.sln
 *.sw?
+
+# Wallet keys
+wallet.json

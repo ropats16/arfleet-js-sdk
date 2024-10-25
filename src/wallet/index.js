@@ -33,6 +33,7 @@ const createWallet = async(path) => {
 };
 
 const initWallet = async() => {
+    utils.setDataDir('~/.arfleet-client');
     const walletPath = utils.getDatadir(config.walletPath);
 
     if (!fs.existsSync(walletPath)) {
