@@ -2,6 +2,7 @@ const fs = require('fs');
 const arweave = require('../arweave');
 const utils = require('../utils');
 const config = require('../config');
+const mkdirp = require('mkdirp');
 
 class Wallet {
     constructor(path) {
@@ -33,10 +34,13 @@ const createWallet = async (path) => {
 };
 
 const initWallet = async () => {
+    // hard coded path
     utils.setDataDir('~/.arfleet-client');
     const walletPath = utils.getDatadir(config.walletPath);
 
     if (!fs.existsSync(walletPath)) {
+        // hard coded path
+        await mkdirp(utils.getDatadir());
         await createWallet(walletPath);
     }
 
