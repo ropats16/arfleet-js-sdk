@@ -8,6 +8,9 @@ module.exports = {
         process.env.DATADIR = module.exports.resolveHome(path);
     },
     getDatadir: function(path) {
+        if (!process.env.DATADIR) {
+            this.setDataDir('~/.arfleet-client');
+        }
         const datadir = process.env.DATADIR;
         return path ? nodepath.join(datadir, path) : datadir;
     },

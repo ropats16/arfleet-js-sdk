@@ -5,6 +5,7 @@ const passes = require('../arweave/passes');
 const { getAoInstance } = require('../arweave/ao');
 const { color } = require('../utils/color');
 const { Assignment, Placement } = require('../db/models');
+const { initWallet } = require('../wallet');
 
 let state = {};
 
@@ -54,3 +55,39 @@ function getClientInstance(initialState = null) {
 }
 
 module.exports = getClientInstance;
+
+let client;
+
+async function fun() {
+    // const wallet = await initWallet();
+    // console.log(wallet);
+    // client = getClientInstance({ wallet: wallet });
+    // console.log("client log main",client);
+    // client.getAssignments().then((assignments) => {
+    //     console.log(assignments);
+    // })
+    //do this in a promise
+    const promise = new Promise((resolve, reject) => {
+        initWallet().then((wallet) => {
+            client = getClientInstance({ wallet: wallet });
+            resolve();
+        });
+    });
+
+    await promise;
+}
+
+async function tryClient() {
+    while(!client) {
+        console.log("waiting for client");
+        await new Promise(resolve => setTimeout(resolve, 15000));
+    }
+    console.log("client log user",client);
+    client.getAssignments().then((assignments) => {
+        console.log(assignments);
+    })
+}
+
+
+fun().then(tryClient());
+// tryClient()
