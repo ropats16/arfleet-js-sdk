@@ -5,9 +5,9 @@ const axios = require('axios');
 
 let announcements = [];
 
-const checkAnnouncements = async() => {
+const checkAnnouncements = async () => {
     announcements = await marketplace.getAnnouncements();
-    console.log("Announcements:", announcements);
+    // console.log("Announcements:", announcements);
 
     announcements = [];
 
@@ -15,7 +15,7 @@ const checkAnnouncements = async() => {
     checkLocalAnnouncements();
 }
 
-const checkLocalAnnouncements = async() => {
+const checkLocalAnnouncements = async () => {
     const port = config.provider.publicServer.port;
     const connectionStrings = [
         `http://localhost:${port}/announcement`,
@@ -26,23 +26,23 @@ const checkLocalAnnouncements = async() => {
 
     for (const connectionString of connectionStrings) {
         try {
-            console.log("Looking for local announcement");
+            // console.log("Looking for local announcement");
             const localAnnouncement = await axios.get(connectionString);
             if (localAnnouncement.data.announcement) {
-                console.log("Local announcement:", localAnnouncement.data.announcement);
+                // console.log("Local announcement:", localAnnouncement.data.announcement);
                 announcements[localAnnouncement.data.announcement.ProviderId] = localAnnouncement.data.announcement;
-                console.log("Announcements:", announcements);
+                // console.log("Announcements:", announcements);
             } else {
-                console.log("No local announcement found");
+                // console.log("No local announcement found");
             }
-        } catch(e) {
-            console.log("No local announcement available: can't connect to", connectionString);
+        } catch (e) {
+            // console.log("No local announcement available: can't connect to", connectionString);
             // Do nothing
         }
     }
 }
 
-const startChecking = async() => {
+const startChecking = async () => {
     checkAnnouncements();
 
     // Leave default value here so it doesn't become 0 if unset
@@ -73,7 +73,7 @@ const getProvidersToConnect = () => {
         })
     }
 
-    console.log("Providers to connect:", result.length);
+    // console.log("Providers to connect:", result.length);
 
     return result;
 }

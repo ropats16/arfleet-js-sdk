@@ -12,29 +12,29 @@ function decryptFile(fileIn, fileOut) {
     const writeStream = fs.createWriteStream(fileOut);
 
     const decipher = crypto.createDecipher('aes256', KEY);
-    
+
     readStream.pipe(decipher).pipe(writeStream);
 }
 
 process.on('message', async (message) => {
     if (message.command === 'decrypt') {
-        const {fileIn, fileOut, chunkId} = message;
+        const { fileIn, fileOut, chunkId } = message;
 
         try {
             decryptFile(fileIn, fileOut);
-        } catch(e) {
-            console.log('Error', e);
+        } catch (e) {
+            // console.log('Error', e);
             throw e;
         }
 
         process.send({
             'command': 'decrypt',
-            'success': true, 
-            'chunkId': chunkId, 
+            'success': true,
+            'chunkId': chunkId,
             'hashIn': utils.hashFnHex(fs.readFileSync(fileIn)),
             'hashOut': utils.hashFnHex(fs.readFileSync(fileOut))
         });
     }
 });
 
-module.exports = {decryptFile};
+module.exports = { decryptFile };

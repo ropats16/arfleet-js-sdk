@@ -20,8 +20,8 @@ class Client {
 
         this.ao = getAoInstance({ wallet: this.wallet });
 
-        console.log("Datadir: ", utils.getDatadir());
-        
+        // console.log("Datadir: ", utils.getDatadir());
+
         await utils.outputWalletAddressAndBalance(this.ao, this.address, config.defaultToken, config.defaultTokenDecimals, config.defaultTokenSymbol);
 
         await passes.startChecking(this.address);
@@ -30,6 +30,8 @@ class Client {
 
         const { placementChunkQueue } = require('./background/placementChunkQueue');
         placementChunkQueue; // start the queue
+
+        console.log(color("Client started", "green"));
     }
 
     async getAssignments() {
@@ -45,8 +47,13 @@ class Client {
 
 let clientInstance;
 
-function getClientInstance(initialState = null) {
-    if(!clientInstance) {
+async function getClientInstance(initialState = null) {
+    if (!initialState.wallet) {
+        await initWallet()
+    } else {
+
+    }
+    if (!clientInstance) {
         if (!initialState) throw new Error("Client is not initialized with a state");
         clientInstance = new Client(initialState);
     }
@@ -54,40 +61,68 @@ function getClientInstance(initialState = null) {
     return clientInstance;
 }
 
-module.exports = getClientInstance;
 
-let client;
 
-async function fun() {
+async function getClient() {
+
     // const wallet = await initWallet();
     // console.log(wallet);
     // client = getClientInstance({ wallet: wallet });
-    // console.log("client log main",client);
+    // console.log("client log main", client);
     // client.getAssignments().then((assignments) => {
-    //     console.log(assignments);
+    //     // console.log(assignments);
     // })
     //do this in a promise
-    const promise = new Promise((resolve, reject) => {
-        initWallet().then((wallet) => {
-            client = getClientInstance({ wallet: wallet });
-            resolve();
+    // const promise = new Promise((resolve, reject) => {
+    //     initWallet().then((wallet) => {
+    //         const client = getClientInstance({ wallet: wallet });
+
+    //         resolve(client);
+    //     });
+    // });
+
+    // // await promise;
+    // return promise;
+
+    //resolve and return client
+    return new Promise((resolve, reject) => {
+        initWallet().then(async (wallet) => {
+            if (clientInstance) {
+                resolve(clientInstance);
+                return;
+            }
+            clientInstance = getClientInstance({ wallet: wallet });
+            while (!clientInstance) {
+                // console.log("waiting for client");
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            resolve(clientInstance);
         });
     });
-
-    await promise;
 }
 
-async function tryClient() {
-    while(!client) {
-        console.log("waiting for client");
-        await new Promise(resolve => setTimeout(resolve, 15000));
-    }
-    console.log("client log user",client);
-    client.getAssignments().then((assignments) => {
-        console.log(assignments);
-    })
-}
+module.exports = { getClientInstance, getClient };
 
 
-fun().then(tryClient());
+
+// async function test() {
+//     const client = await getClient();
+//     // console.log("done", (await client.getAssignments()));
+// }
+
+// test()
+
+// async function tryClient() {
+//     while (!client) {
+//         // console.log("waiting for client");
+//         await new Promise(resolve => setTimeout(resolve, 1000));
+//     }
+//     // console.log("client log user", client);
+//     client.getAssignments().then((assignments) => {
+//         // console.log(assignments);
+//     })
+// }
+
+
+// fun().then(tryClient());
 // tryClient()

@@ -4,17 +4,20 @@ const { initWallet } = require("./src/wallet");
 // const config = require("./src/config");
 // const utils = require("./src/utils");
 // const getClientInstance = require("./src/client");
+const { getClient } = require("./src/client");
 
 async function run() {
-    this.wallet = await initWallet();
-    console.log(wallet);
+    const client1 = await getClient();
+    client1.getAssignments().then(console.log);
+    // this.wallet = await initWallet();
+    // console.log(wallet);
 
     // this.address = await this.wallet.getAddress();
 
     //     this.ao = getAoInstance({ wallet: this.wallet });
 
-    //     console.log("Datadir: ", utils.getDatadir());
-        
+    //     // console.log("Datadir: ", utils.getDatadir());
+
     //     await utils.outputWalletAddressAndBalance(this.ao, this.address, config.defaultToken, config.defaultTokenDecimals, config.defaultTokenSymbol);
 
     //     await startChecking(this.address);

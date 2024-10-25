@@ -3,7 +3,7 @@ class BackgroundQueue {
         {
             REBOOT_INTERVAL = 5 * 1000,
             addCandidates = async () => [],
-            processCandidate = async () => {}
+            processCandidate = async () => { }
         },
         name = "unnamed-queue"
     ) {
@@ -18,7 +18,7 @@ class BackgroundQueue {
 
     // Start processing the queue
     async boot() {
-        console.log(`Starting queue: ${this.name}`);
+        // console.log(`Starting queue: ${this.name}`);
         this.running = true;
         while (this.running) {
             try {
@@ -40,7 +40,7 @@ class BackgroundQueue {
         }
     }
 
-    add(id){
+    add(id) {
         this.queue.push(id);
     }
     // Utility function to pause execution for a given time

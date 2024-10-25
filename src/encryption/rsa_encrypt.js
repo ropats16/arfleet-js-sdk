@@ -12,8 +12,8 @@ const STUPID_PADDING = 1;
 function encryptFile(filePath, toFile, privKey) {
     const fromFile = path.resolve(filePath);
 
-    const writeSize = BITS/8;
-    const readSize = writeSize-STUPID_PADDING;
+    const writeSize = BITS / 8;
+    const readSize = writeSize - STUPID_PADDING;
 
     // todo: check that file exists and it's a file?
 
@@ -34,12 +34,12 @@ function encryptFile(filePath, toFile, privKey) {
         buffer = utils.xorBuffersInPlace(buffer, mixIn);
 
         try {
-            encrypted = crypto.privateEncrypt({key: privKey, padding: crypto.constants.RSA_NO_PADDING}, buffer);
-        } catch(e) {
-            console.log('crypto.privateEncrypt returned error: '+e);
-            console.log('Initial buffer:', buffer.length+" bytes:", buffer.toString('hex'), buffer.toString());
-            console.log({privKey});
-            console.log({c});
+            encrypted = crypto.privateEncrypt({ key: privKey, padding: crypto.constants.RSA_NO_PADDING }, buffer);
+        } catch (e) {
+            // console.log('crypto.privateEncrypt returned error: '+e);
+            // console.log('Initial buffer:', buffer.length+" bytes:", buffer.toString('hex'), buffer.toString());
+            // console.log({privKey});
+            // console.log({c});
             throw e;
         }
 
@@ -57,9 +57,9 @@ function encryptFile(filePath, toFile, privKey) {
 
 process.on('message', async (message) => {
     if (message.command === 'encrypt') {
-        const {filePath, chunkId, privKey, linkId} = message;
+        const { filePath, chunkId, privKey, linkId } = message;
 
-        const suffix = '.'+linkId+'.enc';
+        const suffix = '.' + linkId + '.enc';
         const encryptedPath = filePath + suffix;
 
         encryptFile(filePath, encryptedPath, privKey);
@@ -70,4 +70,4 @@ process.on('message', async (message) => {
     }
 });
 
-module.exports = {encryptFile};
+module.exports = { encryptFile };

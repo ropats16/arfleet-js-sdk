@@ -9,7 +9,7 @@ const pathFromScriptToCwd = (x) => {
 }
 
 const makeMigration = () => {
-    console.log("Making migration...")
+    // console.log("Making migration...")
 
     // A little hack: prepare sequelize-auto-migrations for reading from the current datadir config
     process.argv = [
@@ -24,7 +24,7 @@ const makeMigration = () => {
         'automigration'
     ];
 
-    const {Database} = require('../db/models');
+    const { Database } = require('../db/models');
     Database.init();
 
     require('sequelize-auto-migrations/bin/makemigration.js');

@@ -9,8 +9,8 @@ const BITS = config.rsa_encryption.bits;
 const STUPID_PADDING = 1;
 
 function decryptFile(fileIn, fileOut, pubKey) {
-    const readSize = BITS/8;
-    const writeSize = readSize-STUPID_PADDING;
+    const readSize = BITS / 8;
+    const writeSize = readSize - STUPID_PADDING;
 
     let fe = fs.openSync(fileIn, 'r');
     let fd = fs.openSync(fileOut, 'w+');
@@ -20,7 +20,7 @@ function decryptFile(fileIn, fileOut, pubKey) {
         let readBuffer = Buffer.alloc(readSize);
         let bytesRead = fs.readSync(fe, readBuffer, 0, readSize, null);
 
-        let decrypted = crypto.publicDecrypt({key: pubKey, padding: crypto.constants.RSA_NO_PADDING}, readBuffer);
+        let decrypted = crypto.publicDecrypt({ key: pubKey, padding: crypto.constants.RSA_NO_PADDING }, readBuffer);
 
         // Turning ECB mode into CBC mode
         let mixIn = Buffer.alloc(writeSize);
@@ -31,7 +31,7 @@ function decryptFile(fileIn, fileOut, pubKey) {
         // todo: validate that the stupid padding bytes are 0x00 (or valid)?
         // todo: validate that the rest of the padding is filled with 0x00
 
-        fs.writeSync(fd, decrypted, STUPID_PADDING, decrypted.length-STUPID_PADDING);
+        fs.writeSync(fd, decrypted, STUPID_PADDING, decrypted.length - STUPID_PADDING);
 
         if (bytesRead !== readSize) break;
 
@@ -46,12 +46,12 @@ function decryptFile(fileIn, fileOut, pubKey) {
 
 process.on('message', async (message) => {
     if (message.command === 'decrypt') {
-        const {fileIn, fileOut, chunkId, pubKey} = message;
+        const { fileIn, fileOut, chunkId, pubKey } = message;
 
         try {
             decryptFile(fileIn, fileOut, pubKey);
-        } catch(e) {
-            console.log('Error', e);
+        } catch (e) {
+            // console.log('Error', e);
             throw e;
         }
 
@@ -61,4 +61,4 @@ process.on('message', async (message) => {
     }
 });
 
-module.exports = {decryptFile};
+module.exports = { decryptFile };

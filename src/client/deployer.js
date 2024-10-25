@@ -52,14 +52,14 @@ const processFile = async (buf, chunkQueue) => {
     if (chunks.length > 1) {
         const merkleRoot = merkleTree[merkleTree.length - 1];
 
-        const fileIndex = config.chunkinfoPrologue + JSON.stringify({"type": "file", "hash": merkleRoot.toString('hex'), "size": filesize, "chunks": chunkHashesHex});
+        const fileIndex = config.chunkinfoPrologue + JSON.stringify({ "type": "file", "hash": merkleRoot.toString('hex'), "size": filesize, "chunks": chunkHashesHex });
         const fileIndexRaw = Buffer.from(fileIndex, 'utf-8');
         const fileIndexResult = await processFile(fileIndexRaw, chunkQueue);
         // if fileIndexRaw is less than CHUNK_SIZE, we will just get its hash
 
         chunkQueue.push(fileIndexResult.hash);
 
-        console.log({fileIndexResult, filesize, chunkHashesHex, merkleRoot, CHUNK_SIZE})
+        // console.log({fileIndexResult, filesize, chunkHashesHex, merkleRoot, CHUNK_SIZE})
 
         ret = {
             "type": "fileptr",
@@ -74,7 +74,7 @@ const processFile = async (buf, chunkQueue) => {
         };
     }
 
-    console.log({ret});
+    // console.log({ret});
 
     return ret;
 };
@@ -117,7 +117,7 @@ const processDirectory = async (path, chunkQueue) => {
         "size": dir.size + size,
     }
 
-    console.log({ret});
+    // console.log({ret});
 
     return ret;
 };
@@ -162,7 +162,7 @@ const store = async (path) => {
 
         pos++;
     }
-    await AssignmentChunk.bulkCreate(chunkEntries, {ignoreDuplicates: true});
+    await AssignmentChunk.bulkCreate(chunkEntries, { ignoreDuplicates: true });
 
     await Assignment.update({ is_active: true }, {
         where: { id: assignmentId }
@@ -171,8 +171,8 @@ const store = async (path) => {
     // trigger assignment manager
     assignmentQueue.add(assignmentId);
 
-    console.log(storeInfo);
-    console.log({chunkQueue});
+    // console.log(storeInfo);
+    // console.log({chunkQueue});
     return storeInfo;
 };
 

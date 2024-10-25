@@ -41,14 +41,14 @@ class PlacementChunk extends Model {
 
 PlacementChunk.init(
     {
-        id: {type: Sequelize.DataTypes.STRING, unique: true, primaryKey: true},
-        placement_id: {type: Sequelize.DataTypes.STRING, allowNull: false},
-        is_encrypted: {type: Sequelize.DataTypes.BOOLEAN, allowNull: false, defaultValue: false},
-        is_sent: {type: Sequelize.DataTypes.BOOLEAN, allowNull: false, defaultValue: false},
-        original_chunk_id: {type: Sequelize.DataTypes.STRING, allowNull: true},
-        encrypted_chunk_id: {type: Sequelize.DataTypes.STRING, allowNull: true},
-        original_size: {type: Sequelize.DataTypes.BIGINT, allowNull: true},
-        pos: {type: Sequelize.DataTypes.INTEGER, allowNull: true},
+        id: { type: Sequelize.DataTypes.STRING, unique: true, primaryKey: true },
+        placement_id: { type: Sequelize.DataTypes.STRING, allowNull: false },
+        is_encrypted: { type: Sequelize.DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+        is_sent: { type: Sequelize.DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+        original_chunk_id: { type: Sequelize.DataTypes.STRING, allowNull: true },
+        encrypted_chunk_id: { type: Sequelize.DataTypes.STRING, allowNull: true },
+        original_size: { type: Sequelize.DataTypes.BIGINT, allowNull: true },
+        pos: { type: Sequelize.DataTypes.INTEGER, allowNull: true },
         // dl_status: {
         //     type: Sequelize.DataTypes.STRING,
         //     defaultValue: CHUNK_DOWNLOAD_STATUS.NOT_STARTED
@@ -64,13 +64,13 @@ PlacementChunk.init(
     },
     {
         indexes: [
-            {fields: ['placement_id']},
-            {fields: ['is_encrypted']},
-            {fields: ['is_sent']},
-            {fields: ['original_chunk_id']},
-            {fields: ['encrypted_chunk_id']},
-            {fields: ['placement_id', 'pos']},
-            {fields: ['placement_id', 'is_sent']},
+            { fields: ['placement_id'] },
+            { fields: ['is_encrypted'] },
+            { fields: ['is_sent'] },
+            { fields: ['original_chunk_id'] },
+            { fields: ['encrypted_chunk_id'] },
+            { fields: ['placement_id', 'pos'] },
+            { fields: ['placement_id', 'is_sent'] },
             // {fields: ['ul_status']},
             // {fields: ['dl_status']}
         ]

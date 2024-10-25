@@ -27,12 +27,12 @@ class Wallet {
     }
 }
 
-const createWallet = async(path) => {
+const createWallet = async (path) => {
     const key = await arweave.wallets.generate();
     fs.writeFileSync(path, JSON.stringify(key));
 };
 
-const initWallet = async() => {
+const initWallet = async () => {
     utils.setDataDir('~/.arfleet-client');
     const walletPath = utils.getDatadir(config.walletPath);
 
@@ -44,5 +44,6 @@ const initWallet = async() => {
 };
 
 module.exports = {
-    initWallet
+    initWallet,
+
 }

@@ -18,7 +18,7 @@ class AOClient {
     async getResult(process_id, message, attempt = 0) {
         try {
             if (!attempt) attempt = 0;
-    
+
             const resdata = await result({
                 process: process_id,
                 message: message,
@@ -28,7 +28,7 @@ class AOClient {
             if (attempt > MAX_ATTEMPTS) {
                 throw e;
             } else {
-                console.log("Retrying...");
+                // console.log("Retrying...");
                 return this.getResult(process_id, message, attempt + 1);
             }
         }
@@ -37,12 +37,12 @@ class AOClient {
     async sendActionJSON(process_id, action, data, tags = {}, attempt = 0) {
         return await this.sendAction(process_id, action, JSON.stringify(data), tags, attempt);
     }
-    
+
     async sendAction(process_id, action, data, tags = {}, attempt = 0) {
         try {
             if (!attempt) attempt = 0;
-    
-            console.log("sendAction", { action, data, tags });
+
+            // console.log("sendAction", { action, data, tags });
 
             let t = [
                 { name: "Action", value: action },
@@ -59,11 +59,11 @@ class AOClient {
                 tags: t,
                 data: data,
             });
-    
-            console.log({ res });
-    
+
+            // console.log({ res });
+
             const resdata = await this.getResult(process_id, res);
-            console.log(resdata);
+            // console.log(resdata);
 
             if (resdata["Messages"] && resdata["Messages"].length > 0 && resdata["Messages"][0].Data) {
                 const result = resdata["Messages"][0].Data;
@@ -77,8 +77,8 @@ class AOClient {
                         return resdata.Output.data.output;
                     }
                 }
-                console.log("Returning null!!!");
-                console.log("resdata", resdata);
+                // console.log("Returning null!!!");
+                // console.log("resdata", resdata);
                 return null;
             }
 
@@ -88,29 +88,29 @@ class AOClient {
                 throw e;
             } else {
                 console.error(e);
-                console.log("Retrying action...");
+                // console.log("Retrying action...");
                 return this.sendAction(process_id, action, data, tags, attempt + 1);
             }
         }
     }
-    
+
     async getInbox() {
         const resdata = await this.sendAction("Eval", "Inbox");
         const inbox = resdata.Output.data;
         // return inbox;
         const json = inbox.json;
-        console.log({ json });
+        // console.log({ json });
         return json;
     }
 
-    async spawn(source_lua, tags=[]) {
+    async spawn(source_lua, tags = []) {
         const res = await connection.spawn({
             module: config.aosModule,
             scheduler: AOScheduler,
             signer: this.signer,
             tags,
         });
-    
+
         // - source code
         await this.sendAction(res, "Eval", source_lua);
 
@@ -126,7 +126,7 @@ class AOClient {
         const ret = await this.sendAction(process_id, "GetState", "");
         try {
             return JSON.parse(ret);
-        } catch(e) {
+        } catch (e) {
             console.error("Error parsing state", e);
             console.error("ret", ret);
             throw e;
@@ -135,7 +135,7 @@ class AOClient {
 
     async dryRun(process_id, action, data = "{}", tags = {}) {
         const url = `${config.aoConfig.CU_URL}/dry-run?process-id=${process_id}`;
-        
+
         const tagsToSend = [];
         for (const key in tags) {
             tagsToSend.push({ name: key, value: tags[key] });
@@ -145,7 +145,7 @@ class AOClient {
         tagsToSend.push({ name: "Type", value: "Message" });
         tagsToSend.push({ name: "Variant", value: "ao.TN.1" });
 
-        const body = { 
+        const body = {
             Id: "1234",
             Target: process_id,
             Owner: "1234",
@@ -201,11 +201,11 @@ class AOClient {
 let aoInstance;
 
 function getAoInstance(initialState = null) {
-    if(!aoInstance) {
+    if (!aoInstance) {
         if (!initialState) throw new Error("AOClient is not initialized with a state");
         aoInstance = new AOClient(initialState);
     }
-    
+
     return aoInstance;
 }
 

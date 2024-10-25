@@ -23,7 +23,7 @@ class PSPlacementChunk extends Model {
             // console.log('Get data: chunk_id', chunk_id);
             const data = fs.readFileSync(PSPlacementChunk.getPath(chunk.id));
             res.send(data);
-        } catch(e) {
+        } catch (e) {
 
             // console.error('Error: Chunk not found: ', chunk_id, e);
 
@@ -38,33 +38,33 @@ class PSPlacementChunk extends Model {
                 }
 
                 return data;
-            } catch(e) {
+            } catch (e) {
 
                 // 404
                 throw new Error('Chunk not found: ' + chunk_id);
 
-            }    
+            }
         }
     }
 }
 
 PSPlacementChunk.init(
     {
-        id: {type: Sequelize.DataTypes.STRING, unique: true, primaryKey: true},
-        placement_id: {type: Sequelize.DataTypes.STRING, allowNull: false}, // shouldn't it be p_s_placement_id?
-        original_chunk_id: {type: Sequelize.DataTypes.STRING, allowNull: true},
-        original_size: {type: Sequelize.DataTypes.BIGINT, allowNull: true},
-        encrypted_chunk_id: {type: Sequelize.DataTypes.STRING, allowNull: true},
-        is_received: {type: Sequelize.DataTypes.BOOLEAN, allowNull: false, defaultValue: false},
-        pos: {type: Sequelize.DataTypes.INTEGER, allowNull: true},
+        id: { type: Sequelize.DataTypes.STRING, unique: true, primaryKey: true },
+        placement_id: { type: Sequelize.DataTypes.STRING, allowNull: false }, // shouldn't it be p_s_placement_id?
+        original_chunk_id: { type: Sequelize.DataTypes.STRING, allowNull: true },
+        original_size: { type: Sequelize.DataTypes.BIGINT, allowNull: true },
+        encrypted_chunk_id: { type: Sequelize.DataTypes.STRING, allowNull: true },
+        is_received: { type: Sequelize.DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
+        pos: { type: Sequelize.DataTypes.INTEGER, allowNull: true },
     },
     {
         indexes: [
-            {fields: ['placement_id']},
-            {fields: ['original_chunk_id']},
-            {fields: ['encrypted_chunk_id']},
-            {fields: ['placement_id', 'pos']},
-            {fields: ['placement_id', 'is_received']},
+            { fields: ['placement_id'] },
+            { fields: ['original_chunk_id'] },
+            { fields: ['encrypted_chunk_id'] },
+            { fields: ['placement_id', 'pos'] },
+            { fields: ['placement_id', 'is_received'] },
             // {fields: ['ul_status']},
             // {fields: ['dl_status']}
         ]
