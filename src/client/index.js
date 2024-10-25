@@ -6,6 +6,7 @@ const { getAoInstance } = require('../arweave/ao');
 const { color } = require('../utils/color');
 const { Assignment, Placement } = require('../db/models');
 const { initWallet } = require('../wallet');
+const { store } = require('./deployer');
 
 let state = {};
 
@@ -42,6 +43,10 @@ class Client {
     async getPlacements(assignmentId) {
         const placements = await Placement.findAll({ where: { assignment_id: assignmentId } });
         return placements;
+    }
+
+    async store(filePath) {
+        await store(filePath);
     }
 }
 
