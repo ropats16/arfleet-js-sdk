@@ -206,14 +206,14 @@ module.exports = {
         return a;
     },
     outputWalletAddressAndBalance: async function (ao, address, token, decimals, symbol) {
-        // console.log(color("Wallet address: " + address, "cyan"));
+        console.log(color("Wallet address: " + address, "cyan"));
         const balance = await ao.getTokenBalance(token, decimals, address);
-        // console.log(color("Balance (Token " + token + "): " + balance + " " + symbol, "cyan"));
+        console.log(color("Balance (Token " + token + "): " + balance + " " + symbol, "cyan"));
 
         if (balance <= 0) {
-            // console.log("");
-            // console.log(color("WARNING: You don't have any balance in your wallet. Please fund your wallet with some " + symbol + " to be able to create deals.", "red"));
-            // console.log("");
+            console.log("");
+            console.log(color("WARNING: You don't have any balance in your wallet. Please fund your wallet with some " + symbol + " to be able to create deals.", "red"));
+            console.log("");
         }
     }
 }
