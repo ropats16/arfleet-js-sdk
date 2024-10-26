@@ -51,7 +51,7 @@ process.on('message', async (message) => {
         try {
             decryptFile(fileIn, fileOut, pubKey);
         } catch (e) {
-            // console.log('Error', e);
+            process.env.DEBUG && console.log('Error', e);
             throw e;
         }
 

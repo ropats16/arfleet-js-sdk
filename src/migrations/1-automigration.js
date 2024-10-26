@@ -735,7 +735,7 @@ module.exports = {
                 function next() {
                     if (index < commands.length) {
                         let command = commands[index];
-                        // console.log("[#"+index+"] execute: " + command.fn);
+                        process.env.DEBUG && console.log("[#"+index+"] execute: " + command.fn);
                         index++;
                         queryInterface[command.fn].apply(queryInterface, command.params).then(next, reject);
                     }

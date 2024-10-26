@@ -40,6 +40,11 @@ class Client {
         return assignments;
     }
 
+    async getAssignment(assignmentId) {
+        const assignment = await Assignment.findByPk(assignmentId);
+        return assignment;
+    }
+
     async getPlacements(assignmentId) {
         const placements = await Placement.findAll({ where: { assignment_id: assignmentId } });
         return placements;
@@ -96,7 +101,7 @@ module.exports = getClientInstance;
 //             }
 //             clientInstance = getClientInstance({ wallet: wallet });
 //             while (!clientInstance) {
-//                 // console.log("waiting for client");
+//                 process.env.DEBUG && console.log("waiting for client");
 //                 await new Promise(resolve => setTimeout(resolve, 1000));
 //             }
 //             resolve(clientInstance);

@@ -28,7 +28,7 @@ class AOClient {
             if (attempt > MAX_ATTEMPTS) {
                 throw e;
             } else {
-                // console.log("Retrying...");
+                process.env.DEBUG && console.log("Retrying...");
                 return this.getResult(process_id, message, attempt + 1);
             }
         }
@@ -42,7 +42,7 @@ class AOClient {
         try {
             if (!attempt) attempt = 0;
 
-            // console.log("sendAction", { action, data, tags });
+            process.env.DEBUG && console.log("sendAction", { action, data, tags });
 
             let t = [
                 { name: "Action", value: action },
@@ -60,10 +60,10 @@ class AOClient {
                 data: data,
             });
 
-            // console.log({ res });
+            process.env.DEBUG && console.log({ res });
 
             const resdata = await this.getResult(process_id, res);
-            // console.log(resdata);
+            process.env.DEBUG && console.log(resdata);
 
             if (resdata["Messages"] && resdata["Messages"].length > 0 && resdata["Messages"][0].Data) {
                 const result = resdata["Messages"][0].Data;
@@ -77,8 +77,8 @@ class AOClient {
                         return resdata.Output.data.output;
                     }
                 }
-                // console.log("Returning null!!!");
-                // console.log("resdata", resdata);
+                process.env.DEBUG && console.log("Returning null!!!");
+                process.env.DEBUG && console.log("resdata", resdata);
                 return null;
             }
 
@@ -88,7 +88,7 @@ class AOClient {
                 throw e;
             } else {
                 console.error(e);
-                // console.log("Retrying action...");
+                process.env.DEBUG && console.log("Retrying action...");
                 return this.sendAction(process_id, action, data, tags, attempt + 1);
             }
         }
@@ -99,7 +99,7 @@ class AOClient {
         const inbox = resdata.Output.data;
         // return inbox;
         const json = inbox.json;
-        // console.log({ json });
+        process.env.DEBUG && console.log({ json });
         return json;
     }
 
@@ -172,7 +172,7 @@ class AOClient {
         });
 
         const returned = JSON.parse(response.data.Messages[0].Data);
-        // console.log({ returned });
+        process.env.DEBUG && console.log({ returned });
         return returned;
     }
 

@@ -29,7 +29,7 @@ class PlacementChunk extends Model {
 
         placementChunk.is_encrypted = true;
         placementChunk.encrypted_chunk_id = hash;
-        // console.log('Writing Encrypted chunk ID: ', placementChunk.encrypted_chunk_id);
+        process.env.DEBUG && console.log('Writing Encrypted chunk ID: ', placementChunk.encrypted_chunk_id);
 
         await placementChunk.save();
     }

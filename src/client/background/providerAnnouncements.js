@@ -7,7 +7,7 @@ let announcements = [];
 
 const checkAnnouncements = async () => {
     announcements = await marketplace.getAnnouncements();
-    // console.log("Announcements:", announcements);
+    process.env.DEBUG && console.log("Announcements:", announcements);
 
     announcements = [];
 
@@ -26,17 +26,17 @@ const checkLocalAnnouncements = async () => {
 
     for (const connectionString of connectionStrings) {
         try {
-            // console.log("Looking for local announcement");
+            process.env.DEBUG && console.log("Looking for local announcement");
             const localAnnouncement = await axios.get(connectionString);
             if (localAnnouncement.data.announcement) {
-                // console.log("Local announcement:", localAnnouncement.data.announcement);
+                process.env.DEBUG && console.log("Local announcement:", localAnnouncement.data.announcement);
                 announcements[localAnnouncement.data.announcement.ProviderId] = localAnnouncement.data.announcement;
-                // console.log("Announcements:", announcements);
+                process.env.DEBUG && console.log("Announcements:", announcements);
             } else {
-                // console.log("No local announcement found");
+                process.env.DEBUG && console.log("No local announcement found");
             }
         } catch (e) {
-            // console.log("No local announcement available: can't connect to", connectionString);
+            process.env.DEBUG && console.log("No local announcement available: can't connect to", connectionString);
             // Do nothing
         }
     }
@@ -55,7 +55,7 @@ const getProvidersToConnect = () => {
     for (const [provider, announcement] of Object.entries(announcements)) {
         // check if has a pass
         if (!hasPass(provider)) {
-            // console.log("Provider", provider, "has no pass");
+            process.env.DEBUG && console.log("Provider", provider, "has no pass");
             continue;
         }
 
@@ -73,7 +73,7 @@ const getProvidersToConnect = () => {
         })
     }
 
-    // console.log("Providers to connect:", result.length);
+    process.env.DEBUG && console.log("Providers to connect:", result.length);
 
     return result;
 }

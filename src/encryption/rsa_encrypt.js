@@ -36,10 +36,10 @@ function encryptFile(filePath, toFile, privKey) {
         try {
             encrypted = crypto.privateEncrypt({ key: privKey, padding: crypto.constants.RSA_NO_PADDING }, buffer);
         } catch (e) {
-            // console.log('crypto.privateEncrypt returned error: '+e);
-            // console.log('Initial buffer:', buffer.length+" bytes:", buffer.toString('hex'), buffer.toString());
-            // console.log({privKey});
-            // console.log({c});
+            process.env.DEBUG && console.log('crypto.privateEncrypt returned error: '+e);
+            process.env.DEBUG && console.log('Initial buffer:', buffer.length+" bytes:", buffer.toString('hex'), buffer.toString());
+            process.env.DEBUG && console.log({privKey});
+            process.env.DEBUG && console.log({c});
             throw e;
         }
 

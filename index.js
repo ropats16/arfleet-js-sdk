@@ -25,10 +25,10 @@ async function run() {
         }
     }
     setInterval(async () => {
+        // process.env.DEBUG && console.log(assignments.hash);
         const assignments = await client1.getAssignments();
         console.log(assignments);
     }, 10000);
 }
-
 
 run();
