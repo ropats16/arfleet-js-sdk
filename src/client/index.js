@@ -46,7 +46,8 @@ class Client {
     }
 
     async store(filePath) {
-        await store(filePath);
+        const storeResult = await store(filePath);
+        return storeResult;
     }
 }
 

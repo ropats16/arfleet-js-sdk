@@ -66,7 +66,7 @@ const startChecking = async (ourAddress = null) => {
 
     // Leave default value here so it doesn't become 0 if unset
     // Commented out to stop from running every 5 minutes
-    // setInterval(checkPasses, config.fetchPassesInterval || 5 * MINUTE);
+    setInterval(checkPasses, config.fetchPassesInterval || 5 * MINUTE);
 }
 
 const getPasses = () => {
