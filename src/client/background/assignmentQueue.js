@@ -80,43 +80,56 @@ let assignmentQueue = new BackgroundQueue({
             }
 
             for (const provider of providersToConnect) {
+                // create placement id
+                const placementId = assignment.id + '_' + provider.address 
                 // Make sure we didn't try this one already
                 const count = await Placement.count({
                     where: {
-                        id: assignment.id + '_' + provider.address
+                        id: placementId
                     }
                 });
 
                 // console.log(await Placement.allBy('id', assignment.id + '_' + provider.address));
 
+                let placementStatus = ""
+
                 // console.log('Count: ', count);
                 if (count > 0) {
                     // update connection strings
-                    const placement = await Placement.findOneByOrFail('id', assignment.id + '_' + provider.address);
+                    const placement = await Placement.findOneByOrFail('id', placementId);
+                    placementStatus = placement.dataValues.status;
                     placement.provider_connection_strings = (provider.connectionStrings || '').split('|');
                     await placement.save();
 
-                    // console.log('Already tried this provider');
+                    console.log('Already tried this provider');
+                    // console.log('Placement Queue', placementQueue)
                     // todo: retry after some time
-                    continue;
+                    
+                    // continue;
                 }
 
                 // Verify the constraints
+                console.log('Verifying provider constraints');
                 const valid = verifyProviderConstraints(provider, assignment);
                 if (!valid) {
-                    // console.log('Provider constraints not met');
+                    console.log('Provider constraints not met');
                     continue;
                 }
 
                 // Create the link
+                if (placementStatus === "unavailable" && !placementQueue.queue.includes(placementId)) {
+                    console.log("Placement is unavailable, adding to queue")
                 const placement = await Placement.create({
-                    id: assignment.id + '_' + provider.address,
+                    id: placementId,
                     assignment_id: assignment.id,
                     provider_id: provider.address,
                     provider_connection_strings: (provider.connectionStrings || '').split('|'),
                 });
 
                 placementQueue.add(placement.id);
+
+                console.log('Placement added to queue: ', placement.id);
+            }
             }
         }
     }
