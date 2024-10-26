@@ -45,8 +45,8 @@ class Client {
         return placements;
     }
 
-    async store(filePath) {
-        const storeResult = await store(filePath);
+    async store(filePath, duration) {
+        const storeResult = await store(filePath, duration);
         return storeResult;
     }
 }

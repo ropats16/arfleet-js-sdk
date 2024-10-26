@@ -8,7 +8,7 @@ const defaultConfig = {
             host: '127.0.0.1',
             port: 8885
         },
-        defaultDesiredRedundancy: 1,
+        defaultDesiredRedundancy: 2,
         defaultDesiredStorageDuration: 6 * MONTH,
         fetchAnnouncementsInterval: 1 * MINUTE,
         defaultMaxChallengeDuration: 1 * WEEK,

@@ -132,7 +132,7 @@ const storePath = async (path, chunkQueue) => {
     }
 };
 
-const store = async (path) => {
+const store = async (path, duration) => {
     let chunkQueue = [];
     const storeInfo = await storePath(path, chunkQueue);
 
@@ -145,7 +145,8 @@ const store = async (path) => {
     assignment.chunk_count = chunkQueue.length;
     assignment.desired_redundancy = config.client.defaultDesiredRedundancy; // todo: allow user to adjust
     assignment.achieved_redundancy = 0;
-    assignment.desired_storage_duration = config.client.defaultDesiredStorageDuration; // todo: allow user to adjust
+    // assignment.desired_storage_duration = config.client.defaultDesiredStorageDuration; // todo: allow user to adjust
+    assignment.desired_storage_duration = duration;
     assignment.is_active = false;
     await assignment.save();
 
@@ -171,7 +172,7 @@ const store = async (path) => {
     // trigger assignment manager
     assignmentQueue.add(assignmentId);
 
-    // console.log(storeInfo);
+    // console.log("Store Info from deployer", storeInfo);
     // console.log({chunkQueue});
     return storeInfo;
 };
