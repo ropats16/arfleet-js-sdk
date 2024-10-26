@@ -59,7 +59,7 @@ const processFile = async (buf, chunkQueue) => {
 
         chunkQueue.push(fileIndexResult.hash);
 
-        // console.log({fileIndexResult, filesize, chunkHashesHex, merkleRoot, CHUNK_SIZE})
+        process.env.DEBUG && console.log({fileIndexResult, filesize, chunkHashesHex, merkleRoot, CHUNK_SIZE})
 
         ret = {
             "type": "fileptr",
@@ -74,7 +74,7 @@ const processFile = async (buf, chunkQueue) => {
         };
     }
 
-    // console.log({ret});
+    process.env.DEBUG && console.log({ret});
 
     return ret;
 };
@@ -117,7 +117,7 @@ const processDirectory = async (path, chunkQueue) => {
         "size": dir.size + size,
     }
 
-    // console.log({ret});
+    process.env.DEBUG && console.log({ret});
 
     return ret;
 };
@@ -172,8 +172,8 @@ const store = async (path, duration) => {
     // trigger assignment manager
     assignmentQueue.add(assignmentId);
 
-    // console.log("Store Info from deployer", storeInfo);
-    // console.log({chunkQueue});
+    process.env.DEBUG && console.log("Store Info from deployer", storeInfo);
+    process.env.DEBUG && console.log({chunkQueue});
     return storeInfo;
 };
 

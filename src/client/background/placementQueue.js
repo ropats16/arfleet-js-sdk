@@ -17,7 +17,7 @@ class ProviderApi {
 
     async cmd(command, data, headers) {
         const url = `${this.connectionString}/cmd/${command}`;
-        // console.log('Sending request to: ', url);
+        process.env.DEBUG && console.log('Sending request to: ', url);
         const config = {
             headers: {
                 'ArFleet-Address': getClientInstance().address,
@@ -43,17 +43,17 @@ let placementQueue = new BackgroundQueue({
         return ids;
     },
     processCandidate: async (placement_id) => {
-        // console.log('Processing placement: ', placement_id);
+        process.env.DEBUG && console.log('Processing placement: ', placement_id);
 
         const placement = await Placement.findOrFail(placement_id);
-        // console.log('Placement: ', placement);
+        process.env.DEBUG && console.log('Placement: ', placement);
 
         try {
             switch (placement.status) {
                 case PLACEMENT_STATUS.CREATED:
                     {
                         // Let's try to connect
-                        // console.log('Trying to connect to provider: ', placement.provider_id);
+                        process.env.DEBUG && console.log('Trying to connect to provider: ', placement.provider_id);
 
                         const connectionStrings = placement.provider_connection_strings;
                         const connectionString = placement.getConnectionString();
@@ -63,7 +63,7 @@ let placementQueue = new BackgroundQueue({
                         try {
                             const result = await pApi.cmd('ping', {});
 
-                            // console.log({ result });
+                            process.env.DEBUG && console.log({ result });
 
                             const assignment = await Assignment.findOrFail(placement.assignment_id);
 
@@ -83,7 +83,7 @@ let placementQueue = new BackgroundQueue({
                                     provider_id: placement.provider_id
                                 });
 
-                                // console.log({ placementResult });
+                                process.env.DEBUG && console.log({ placementResult });
 
                                 if (placementResult === 'OK') {
                                     // mark as approved
@@ -115,7 +115,7 @@ let placementQueue = new BackgroundQueue({
                             }
                         } catch (e) {
                             // mark as failed
-                            // console.log('Placement Connection Error: ', e);
+                            process.env.DEBUG && console.log('Placement Connection Error: ', e);
                             placement.status = PLACEMENT_STATUS.UNAVAILABLE;
                             await placement.save();
                         }
@@ -180,9 +180,9 @@ let placementQueue = new BackgroundQueue({
                             "State.Status = StatusEnum.Created",
                         ];
                         const process_id = await deal.spawnDeal(lua_lines.join("\n"));
-                        // console.log('Process ID: ', process_id);
+                        process.env.DEBUG && console.log('Process ID: ', process_id);
 
-                        // console.log(await ao().sendAction(process_id, "Eval", "State"));
+                        process.env.DEBUG && console.log(await ao().sendAction(process_id, "Eval", "State"));
 
                         placement.process_id = process_id;
                         placement.status = PLACEMENT_STATUS.PROCESS_SPAWNED;
@@ -195,7 +195,7 @@ let placementQueue = new BackgroundQueue({
                     {
                         // fund with the reward
 
-                        // console.log('Funding placement: ', placement.id);
+                        process.env.DEBUG && console.log('Funding placement: ', placement.id);
 
                         // change the state before sending the action
                         placement.status = PLACEMENT_STATUS.FUNDED;
@@ -204,9 +204,9 @@ let placementQueue = new BackgroundQueue({
 
                         try {
                             await ao().sendToken(config.defaultToken, placement.process_id, placement.required_reward);
-                            // console.log('Token sent');
+                            process.env.DEBUG && console.log('Token sent');
                         } catch (e) {
-                            // console.log('Funding Error: ', e);
+                            process.env.DEBUG && console.log('Funding Error: ', e);
                             placement.status = PLACEMENT_STATUS.FAILED; // todo: try to take the money out
                             placement.error_was = e.toString();
                             await placement.save();
@@ -234,7 +234,7 @@ let placementQueue = new BackgroundQueue({
                             chunks: chunkHashes,
                             process_id: placement.process_id
                         });
-                        // console.log('Accept result: ', acceptResult);
+                        process.env.DEBUG && console.log('Accept result: ', acceptResult);
 
                         if (acceptResult === 'OK') {
                             placement.status = PLACEMENT_STATUS.ACCEPTED;
@@ -269,7 +269,7 @@ let placementQueue = new BackgroundQueue({
                         }
 
                         for (const placementChunk of placementChunks) {
-                            // console.log('Transferring chunk: ', placementChunk);
+                            process.env.DEBUG && console.log('Transferring chunk: ', placementChunk);
                             const placementChunkPath = PlacementChunk.getPath(placementChunk.id);
                             const chunkData = fs.readFileSync(placementChunkPath);
                             const chunkDataB64 = chunkData.toString('base64'); // todo: replace with proper streaming/binary
@@ -282,7 +282,7 @@ let placementQueue = new BackgroundQueue({
                                 hash: placementChunk.encrypted_chunk_id,
                                 original_size: placementChunk.original_size
                             });
-                            // console.log('Transfer result: ', result);
+                            process.env.DEBUG && console.log('Transfer result: ', result);
 
                             if (result === 'OK') {
                                 placementChunk.is_sent = true;
@@ -313,7 +313,7 @@ let placementQueue = new BackgroundQueue({
 
                             // verify that it is now activated
                             const processState = await ao().getState(placement.process_id);
-                            // console.log('Process State: ', processState);
+                            process.env.DEBUG && console.log('Process State: ', processState);
 
                             if (processState.Status !== 'Activated') {
                                 // Allow some time to activate
@@ -326,7 +326,7 @@ let placementQueue = new BackgroundQueue({
                                     placement.error_was = 'Process not activated';
                                     await placement.save();
                                 } else {
-                                    // console.log('Waiting for activation');
+                                    process.env.DEBUG && console.log('Waiting for activation');
                                     setTimeout(() => {
                                         placementQueue.add(placement.id);
                                     }, 5000);
@@ -339,7 +339,7 @@ let placementQueue = new BackgroundQueue({
                                 await assignment.save();
 
                                 // Print merkle tree
-                                // console.log(JSON.stringify(placement.merkle_tree));
+                                process.env.DEBUG && console.log(JSON.stringify(placement.merkle_tree));
                             }
 
                         } else {

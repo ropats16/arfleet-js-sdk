@@ -9,7 +9,7 @@ const pathFromScriptToCwd = (x) => {
 }
 
 const makeMigration = () => {
-    // console.log("Making migration...")
+    process.env.DEBUG && console.log("Making migration...")
 
     // A little hack: prepare sequelize-auto-migrations for reading from the current datadir config
     process.argv = [

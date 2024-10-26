@@ -79,7 +79,7 @@ module.exports = {
 
         do {
             level = this.merkleDerive(level, digestFn, initial_iteration);
-            // console.log('level', level);
+            process.env.DEBUG && console.log('level', level);
             levels.push(level);
             initial_iteration = false;
         } while (level.length > 1);
@@ -127,7 +127,7 @@ module.exports = {
 
         do {
             level = this.merkleDeriveFull(level, digestFn, initial_iteration);
-            // console.log('level', level);
+            process.env.DEBUG && console.log('level', level);
             levels.push(level);
             initial_iteration = false;
         } while (level.length > 1);
