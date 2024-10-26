@@ -57,7 +57,7 @@ const checkPasses = async (firstTime = false, ourAddress = null) => {
 }
 
 const hasPass = (address) => {
-    process.env.DEBUG && console.log({ passes })
+    // process.env.DEBUG && console.log({ passes })
     return passes && passes[address] && passes[address] > 0;
 }
 

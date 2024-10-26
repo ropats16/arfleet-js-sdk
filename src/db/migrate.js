@@ -6,7 +6,7 @@ const { Database } = require('../db/index');
 const glob = require('glob');
 
 const migrate = async () => {
-    process.env.DEBUG && console.log('Starting database migration');
+    // process.env.DEBUG && console.log('Starting database migration');
 
     const sequelize = Database.init();
     const migrationsGlob = path.join(__dirname, '../../src/migrations/*.js');
@@ -14,7 +14,7 @@ const migrate = async () => {
 
     // List files and debug log them
     const files = glob.sync(resolvedMigrationsGlob);
-    process.env.DEBUG && console.log({ files }, 'Migrations files');
+    // process.env.DEBUG && console.log({ files }, 'Migrations files');
 
     const context = sequelize.getQueryInterface();
 
@@ -23,7 +23,7 @@ const migrate = async () => {
             name: path.basename(file),
             path: file,
             up: async ({ context }) => {
-                process.env.DEBUG && console.log({ name: path.basename(file), file }, 'Migrating');
+                // process.env.DEBUG && console.log({ name: path.basename(file), file }, 'Migrating');
                 const migration = require(file);
                 return migration.up(context, Sequelize);
             },
@@ -37,7 +37,7 @@ const migrate = async () => {
         // logger: log
     });
 
-    process.env.DEBUG && console.log({ migrationsGlob }, 'Migrations glob');
+    // process.env.DEBUG && console.log({ migrationsGlob }, 'Migrations glob');
 
     try {
         await umzug.up();
@@ -50,7 +50,7 @@ const migrate = async () => {
         }
     }
 
-    process.env.DEBUG && console.log('Database migration finished');
+    // process.env.DEBUG && console.log('Database migration finished');
 };
 
 module.exports = { migrate };

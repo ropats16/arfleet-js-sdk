@@ -7,7 +7,7 @@ let announcements = [];
 
 const checkAnnouncements = async () => {
     announcements = await marketplace.getAnnouncements();
-    process.env.DEBUG && console.log("Announcements:", announcements);
+    // process.env.DEBUG && console.log("Announcements:", announcements);
 
     announcements = [];
 
@@ -26,17 +26,17 @@ const checkLocalAnnouncements = async () => {
 
     for (const connectionString of connectionStrings) {
         try {
-            process.env.DEBUG && console.log("Looking for local announcement");
+            // process.env.DEBUG && console.log("Looking for local announcement");
             const localAnnouncement = await axios.get(connectionString);
             if (localAnnouncement.data.announcement) {
-                process.env.DEBUG && console.log("Local announcement:", localAnnouncement.data.announcement);
+                // process.env.DEBUG && console.log("Local announcement:", localAnnouncement.data.announcement);
                 announcements[localAnnouncement.data.announcement.ProviderId] = localAnnouncement.data.announcement;
-                process.env.DEBUG && console.log("Announcements:", announcements);
+                // process.env.DEBUG && console.log("Announcements:", announcements);
             } else {
-                process.env.DEBUG && console.log("No local announcement found");
+                // process.env.DEBUG && console.log("No local announcement found");
             }
         } catch (e) {
-            process.env.DEBUG && console.log("No local announcement available: can't connect to", connectionString);
+            // process.env.DEBUG && console.log("No local announcement available: can't connect to", connectionString);
             // Do nothing
         }
     }
@@ -55,7 +55,7 @@ const getProvidersToConnect = () => {
     for (const [provider, announcement] of Object.entries(announcements)) {
         // check if has a pass
         if (!hasPass(provider)) {
-            process.env.DEBUG && console.log("Provider", provider, "has no pass");
+            // process.env.DEBUG && console.log("Provider", provider, "has no pass");
             continue;
         }
 
@@ -73,7 +73,7 @@ const getProvidersToConnect = () => {
         })
     }
 
-    process.env.DEBUG && console.log("Providers to connect:", result.length);
+    // process.env.DEBUG && console.log("Providers to connect:", result.length);
 
     return result;
 }

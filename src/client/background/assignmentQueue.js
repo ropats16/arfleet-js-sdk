@@ -10,7 +10,7 @@ let verifyProviderConstraints = (provider, assignment) => {
     const storageCapacity = provider.storageCapacity;
     const assignmentSize = assignment.size;
     if (assignmentSize > storageCapacity) {
-        process.env.DEBUG && console.log('Assignment size is greater than provider storage capacity');
+        // process.env.DEBUG && console.log('Assignment size is greater than provider storage capacity');
         return false;
     }
 
@@ -18,14 +18,14 @@ let verifyProviderConstraints = (provider, assignment) => {
     const maxStorageDuration = provider.maxStorageDuration;
     const desiredStorageDuration = assignment.desired_storage_duration;
     if (desiredStorageDuration > maxStorageDuration) {
-        process.env.DEBUG && console.log('Desired storage duration is greater than max storage duration by provider');
+        // process.env.DEBUG && console.log('Desired storage duration is greater than max storage duration by provider');
         return false;
     }
 
     // Min Storage Duration
     const minStorageDuration = provider.minStorageDuration;
     if (desiredStorageDuration < minStorageDuration) {
-        process.env.DEBUG && console.log('Desired storage duration is less than min storage duration by provider');
+        // process.env.DEBUG && console.log('Desired storage duration is less than min storage duration by provider');
         return false;
     }
 
@@ -33,7 +33,7 @@ let verifyProviderConstraints = (provider, assignment) => {
     const providerMinChallengeDuration = provider.minChallengeDuration;
     const clientMaxChallengeDuration = config.client.defaultChallengeDuration; // allow user to adjust
     if (providerMinChallengeDuration > clientMaxChallengeDuration) {
-        process.env.DEBUG && console.log('Provider min challenge duration is greater than client max challenge duration');
+        // process.env.DEBUG && console.log('Provider min challenge duration is greater than client max challenge duration');
         return false;
     }
 
@@ -62,20 +62,20 @@ let assignmentQueue = new BackgroundQueue({
         return ids;
     },
     processCandidate: async (assignment_id) => {
-        process.env.DEBUG && console.log('Processing assignment: ', assignment_id);
+        // process.env.DEBUG && console.log('Processing assignment: ', assignment_id);
 
         const assignment = await Assignment.findOrFail(assignment_id);
-        process.env.DEBUG && console.log('Assignment: ', assignment);
+        // process.env.DEBUG && console.log('Assignment: ', assignment);
 
         if (assignment.desired_redundancy > assignment.achieved_redundancy) {
             // try to find a matching provider
-            process.env.DEBUG && console.log(`Redundancy for ${assignment_id} not achieved (${assignment.achieved_redundancy}/${assignment.desired_redundancy}), trying to find a matching provider`);
+            // process.env.DEBUG && console.log(`Redundancy for ${assignment_id} not achieved (${assignment.achieved_redundancy}/${assignment.desired_redundancy}), trying to find a matching provider`);
 
             let providersToConnect = announcements.getProvidersToConnect()
                 .sort(() => Math.random() - 0.5); // todo: instead of random shuffle, order based on price, connectivity, reputation etc.
 
             if (providersToConnect.length === 0) {
-                process.env.DEBUG && console.log('No providers to connect');
+                // process.env.DEBUG && console.log('No providers to connect');
                 return;
             }
 
@@ -89,9 +89,9 @@ let assignmentQueue = new BackgroundQueue({
                     }
                 });
 
-                process.env.DEBUG && console.log(await Placement.allBy('id', assignment.id + '_' + provider.address));
+                // process.env.DEBUG && console.log(await Placement.allBy('id', assignment.id + '_' + provider.address));
 
-                process.env.DEBUG && console.log('Count: ', count);
+                // process.env.DEBUG && console.log('Count: ', count);
                 if (count > 0) {
                     // update connection strings
                     const placement = await Placement.findOneByOrFail('id', placementId);
@@ -99,7 +99,7 @@ let assignmentQueue = new BackgroundQueue({
                     placement.provider_connection_strings = (provider.connectionStrings || '').split('|');
                     await placement.save();
 
-                    process.env.DEBUG && console.log('Already tried this provider');
+                    // process.env.DEBUG && console.log('Already tried this provider');
                     // todo: retry after some time
                     
                     // continue;
@@ -109,24 +109,39 @@ let assignmentQueue = new BackgroundQueue({
                 console.log('Verifying provider constraints');
                 const valid = verifyProviderConstraints(provider, assignment);
                 if (!valid) {
-                    process.env.DEBUG && console.log('Provider constraints not met');
-                    continue;
+                    // process.env.DEBUG && console.log('Provider constraints not met');
+                    console.log('Provider constraints not met');
+                    return;
                 }
 
                 // Create the link
-                if (placementStatus === "unavailable" && !placementQueue.queue.includes(placementId)) {
-                    console.log("Placement is unavailable, adding to queue")
-                const placement = await Placement.create({
-                    id: placementId,
-                    assignment_id: assignment.id,
-                    provider_id: provider.address,
-                    provider_connection_strings: (provider.connectionStrings || '').split('|'),
-                });
+                const existingPlacement = await Placement.findOne({ where: { id: placementId } });
 
-                placementQueue.add(placement.id);
+                if (existingPlacement) {
+                    if (existingPlacement.status === "unavailable" && !placementQueue.queue.includes(existingPlacement.id)) {
+                        console.log("Placement is unavailable, updating status to pending");
+                        await Placement.update({ status: "pending" }, { where: { id: placementId } });
+                    } else {
+                        console.log("Placement already exists with status: ", existingPlacement.status);
+                    }
+                } else {
+                    // Create the link
+                    console.log("Creating new placement");
+                    const placement = await Placement.create({
+                        id: placementId,
+                        assignment_id: assignment.id,
+                        provider_id: provider.address,
+                        provider_connection_strings: (provider.connectionStrings || '').split('|'),
+                    });
 
-                console.log('Placement added to queue: ', placement.id);
-            }
+                    placementQueue.add(placement.id);
+
+                    console.log('Placement added to queue: ', placement.id);
+                }
+    
+                placementQueue.add(existingPlacement.id);
+    
+                console.log('Placement added to queue: ', existingPlacement.id);
             }
         }
     }

@@ -9,7 +9,7 @@ const announce = async (provider, connectionStrings = null) => {
         connectionStrings = provider.connectionStrings;
     }
 
-    process.env.DEBUG && console.log(`Announcing from ${provider.address}, URL are ${provider.connectionStrings}`);
+    // process.env.DEBUG && console.log(`Announcing from ${provider.address}, URL are ${provider.connectionStrings}`);
 
     await ao().sendActionJSON(config.marketplace, "Announce", {
         "Connection-Strings": provider.connectionStrings,

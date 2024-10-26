@@ -18,7 +18,7 @@ class BackgroundQueue {
 
     // Start processing the queue
     async boot() {
-        process.env.DEBUG && console.log(`Starting queue: ${this.name}`);
+        // process.env.DEBUG && console.log(`Starting queue: ${this.name}`);
         this.running = true;
         while (this.running) {
             try {

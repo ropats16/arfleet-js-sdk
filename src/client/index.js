@@ -101,7 +101,7 @@ module.exports = getClientInstance;
 //             }
 //             clientInstance = getClientInstance({ wallet: wallet });
 //             while (!clientInstance) {
-//                 process.env.DEBUG && console.log("waiting for client");
+//                 // process.env.DEBUG && console.log("waiting for client");
 //                 await new Promise(resolve => setTimeout(resolve, 1000));
 //             }
 //             resolve(clientInstance);
