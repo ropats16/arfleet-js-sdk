@@ -115,18 +115,18 @@ let assignmentQueue = new BackgroundQueue({
                 }
 
                 // Create the link
-                const existingPlacement = await Placement.findOne({ where: { id: placementId } });
+                // const existingPlacement = await Placement.findOne({ where: { id: placementId } });
 
-                if (existingPlacement) {
-                    if (existingPlacement.status === "unavailable" && !placementQueue.queue.includes(existingPlacement.id)) {
-                        console.log("Placement is unavailable, updating status to pending");
-                        await Placement.update({ status: "pending" }, { where: { id: placementId } });
-                    } else {
-                        console.log("Placement already exists with status: ", existingPlacement.status);
-                    }
-                } else {
-                    // Create the link
-                    console.log("Creating new placement");
+                // if (existingPlacement) {
+                //     if (existingPlacement.status === "unavailable" && !placementQueue.queue.includes(existingPlacement.id)) {
+                //         console.log("Placement is unavailable, updating status to pending");
+                //         await Placement.update({ status: "pending" }, { where: { id: placementId } });
+                //     } else {
+                //         console.log("Placement already exists with status: ", existingPlacement.status);
+                //     }
+                // } else {
+                //     // Create the link
+                //     console.log("Creating new placement");
                     const placement = await Placement.create({
                         id: placementId,
                         assignment_id: assignment.id,
@@ -134,14 +134,15 @@ let assignmentQueue = new BackgroundQueue({
                         provider_connection_strings: (provider.connectionStrings || '').split('|'),
                     });
 
-                    placementQueue.add(placement.id);
+                //     placementQueue.add(placement.id);
 
-                    console.log('Placement added to queue: ', placement.id);
-                }
+                //     console.log('Placement added to queue: ', placement.id);
+                // }
     
-                placementQueue.add(existingPlacement.id);
+                // placementQueue.add(existingPlacement.id);
+                placementQueue.add(placement.id);
     
-                console.log('Placement added to queue: ', existingPlacement.id);
+                console.log('Placement added to queue: ', placement.id);
             }
         }
     }
