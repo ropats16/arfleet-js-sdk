@@ -1,5 +1,5 @@
 {
-  "name": "arfleet-js",
+  "name": "@arfleet/sdk-monorepo",
   "private": true,
   "scripts": {
     "build": "turbo build",
