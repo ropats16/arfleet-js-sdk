@@ -1,12 +1,6 @@
 {
-  "include": [
-    "packages/*/src",
-    "packages/*/test"
-  ],
-  "exclude": [
-    "node_modules",
-    "packages/*/node_modules"
-  ],
+  "include": ["packages/*/src", "packages/*/test"],
+  "exclude": ["node_modules", "packages/*/node_modules"],
   "compilerOptions": {
     /* Base Options: */
     "esModuleInterop": true,
@@ -34,13 +28,12 @@
     /* AND if you're building for a library in a monorepo: */
     "composite": true,
     "declarationMap": true,
-
     /* If NOT transpiling with TypeScript: */
     // "module": "preserve",
     // "noEmit": true,
 
     /* If your code runs in the DOM: */
-    "lib": ["es2022", "dom", "dom.iterable"],
+    "lib": ["es2022", "dom", "dom.iterable"]
 
     /* If your code doesn't run in the DOM: */
     // "lib": ["es2022"]

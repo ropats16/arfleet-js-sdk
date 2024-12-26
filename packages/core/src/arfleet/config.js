@@ -14,9 +14,9 @@ import {
   WEEK,
   MONTH,
   YEAR,
-} from "./constants";
+} from "./constants.js";
 
-const defaultConfig = {
+export const defaultCoreConfig = {
   marketplace: "-jydy0Gqhtdf2ilVR0zbGrizkx4GJXfcvpJYXzQxwlU",
   aoScheduler: "_GQ33BkPtZrqxA84vM8Zk-N2aO0toNNu_C-l-rawrBA",
   aosModule: "9afQ1PLf2mrshqCTZEzzJTR2gWaC9zNPnYgYEqg1Pt4",
@@ -43,5 +43,3 @@ const defaultConfig = {
     bits: 1024,
   },
 };
-
-export default defaultConfig;

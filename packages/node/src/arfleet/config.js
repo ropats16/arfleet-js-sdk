@@ -82,4 +82,6 @@ const defaultConfig = {
   rsa_encryption: defaultCoreConfig.rsa_encryption,
 };
 
+console.log(defaultConfig);
+
 export default defaultConfig;
