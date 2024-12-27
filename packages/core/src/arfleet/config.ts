@@ -16,7 +16,35 @@ import {
   YEAR,
 } from "./constants.js";
 
-export const defaultCoreConfig = {
+interface PassesConfig {
+  address: string;
+  fetchPassesInterval: number;
+}
+
+interface AOConfig {
+  MU_URL: string;
+  CU_URL: string;
+  GATEWAY_URL: string;
+}
+
+interface RSAEncryptionConfig {
+  bits: number;
+}
+
+interface CoreConfig {
+  marketplace: string;
+  aoScheduler: string;
+  aosModule: string;
+  defaultToken: string;
+  defaultTokenDecimals: number;
+  defaultTokenSymbol: string;
+  aodbProcessId: string;
+  passes: PassesConfig;
+  aoConfig: AOConfig;
+  rsa_encryption: RSAEncryptionConfig;
+}
+
+export const defaultCoreConfig: CoreConfig = {
   marketplace: "-jydy0Gqhtdf2ilVR0zbGrizkx4GJXfcvpJYXzQxwlU",
   aoScheduler: "_GQ33BkPtZrqxA84vM8Zk-N2aO0toNNu_C-l-rawrBA",
   aosModule: "9afQ1PLf2mrshqCTZEzzJTR2gWaC9zNPnYgYEqg1Pt4",
