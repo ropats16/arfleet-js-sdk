@@ -18,10 +18,9 @@
     "noImplicitOverride": true,
 
     /* If transpiling with TypeScript: */
-    /* Commented out for now */
-    // "module": "NodeNext",
-    // "outDir": "./dist",
-    // "sourceMap": true,
+    "module": "NodeNext",
+    "outDir": "./dist",
+    "sourceMap": true,
 
     /* AND if you're building for a library: */
     "declaration": true,
