@@ -71,3 +71,5 @@ export const defaultCoreConfig: CoreConfig = {
     bits: 1024,
   },
 };
+
+export type { CoreConfig, PassesConfig, AOConfig, RSAEncryptionConfig };

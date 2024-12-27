@@ -1,0 +1,8 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "NodeNext"
+    /* moduleResolution NodeNext is implied based on module */
+    // "moduleResolution": "NodeNext"
+  }
+}
