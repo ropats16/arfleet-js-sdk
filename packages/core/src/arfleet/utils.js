@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import config from "./config";
+import config from "./config.js";
 const color = (x, c) => x;
 
-import { sha256 } from "../helpers/hash";
-import { bufferToHex, concatBuffers } from "../helpers/buf";
+import { sha256 } from "../helpers/hash.js";
+import { bufferToHex, concatBuffers } from "../helpers/buf.js";
 
 export default {
   hashFn: async function (buf) {

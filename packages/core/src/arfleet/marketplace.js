@@ -1,8 +1,8 @@
 // const ao = () => { return require('./ao').getAoInstance(); }
-import { getAoInstance } from "./ao";
+import { getAoInstance } from "./ao.js";
 const ao = getAoInstance;
 
-import config from "./config";
+import config from "./config.js";
 
 const announce = async (provider, connectionStrings = null) => {
   if (connectionStrings) {

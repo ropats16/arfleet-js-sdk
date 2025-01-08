@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import config from "./config";
+import config from "./config.js";
 // const { color } = require('../utils/color');
-import { MINUTE } from "./constants";
+import { MINUTE } from "./constants.js";
 import axios from "axios";
-import { getAoInstance } from "./ao";
+import { getAoInstance } from "./ao.js";
 
 function color(x) {
   return x;

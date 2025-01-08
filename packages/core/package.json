@@ -19,6 +19,12 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^22.10.2"
+    "@types/node": "^22.10.2",
+    "arconnect": "^1.0.4",
+    "pnpm": "^9.15.2"
+  },
+  "dependencies": {
+    "@permaweb/aoconnect": "^0.0.62",
+    "axios": "^1.7.9"
   }
 }
