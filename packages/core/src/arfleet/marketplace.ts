@@ -1,10 +1,21 @@
-// const ao = () => { return require('./ao').getAoInstance(); }
 import { getAoInstance } from "./ao.js";
-const ao = getAoInstance;
+import { defaultCoreConfig as config } from "./config.js";
 
-import config from "./config.js";
+interface Provider {
+  address: string;
+  connectionStrings: string[];
+  getCapacityRemaining: () => Promise<number>;
+  getStoragePriceDeal: () => Promise<number>;
+  getStoragePriceUploadKBSec: () => Promise<number>;
+  getMinChallengeDuration: () => Promise<number>;
+  getMinStorageDuration: () => Promise<number>;
+  getMaxStorageDuration: () => Promise<number>;
+}
 
-const announce = async (provider, connectionStrings = null) => {
+const announce = async (
+  provider: Provider,
+  connectionStrings: string[] | null = null,
+) => {
   if (connectionStrings) {
     provider.connectionStrings = connectionStrings;
   } else {
@@ -15,7 +26,7 @@ const announce = async (provider, connectionStrings = null) => {
     `Announcing from ${provider.address}, URL are ${provider.connectionStrings}`,
   );
 
-  await ao().sendActionJSON(config.marketplace, "Announce", {
+  await getAoInstance().sendActionJSON(config.marketplace, "Announce", {
     "Connection-Strings": provider.connectionStrings,
     "Storage-Capacity": await provider.getCapacityRemaining(),
     "Storage-Price-Deal": await provider.getStoragePriceDeal(),
@@ -26,8 +37,8 @@ const announce = async (provider, connectionStrings = null) => {
   });
 };
 
-const getAnnouncement = async (provider_id) => {
-  const ret = await ao().sendActionJSON(
+const getAnnouncement = async (provider_id: string) => {
+  const ret = await getAoInstance().sendActionJSON(
     config.marketplace,
     "Get-Announcement",
     { Provider: provider_id },
@@ -36,7 +47,7 @@ const getAnnouncement = async (provider_id) => {
 };
 
 const getAnnouncements = async () => {
-  const ret = await ao().sendActionJSON(
+  const ret = await getAoInstance().sendActionJSON(
     config.marketplace,
     "Get-Announcements",
     {},

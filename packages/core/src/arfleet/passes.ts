@@ -1,17 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import config from "./config.js";
-// const { color } = require('../utils/color');
+import { defaultCoreConfig as config } from "./config.js";
 import { MINUTE } from "./constants.js";
-import axios from "axios";
 import { getAoInstance } from "./ao.js";
 
-function color(x) {
+function color(x: string): string {
   return x;
 }
 
-let passes = null;
+let passes: { [key: string]: number } | null = null;
 
-const checkPasses = async (firstTime = false, ourAddress = null) => {
+const checkPasses = async (
+  firstTime = false,
+  ourAddress: string | null = null,
+) => {
   console.log("Checking passes...");
   try {
     const passAddress = config.passes.address;
@@ -21,16 +21,15 @@ const checkPasses = async (firstTime = false, ourAddress = null) => {
 
     const passesReturned = response.Balances;
 
-    const passesDestringified = Object.fromEntries(
-      Object.entries(passesReturned).map(([key, value]) => [
-        key,
-        Number(value),
-      ]),
+    const passesDestringified = Object.entries(passesReturned).reduce(
+      (acc, [key, value]) => ({ ...acc, [key]: Number(value as string) }),
+      {},
     );
 
-    const passesFiltered = Object.fromEntries(
-      Object.entries(passesDestringified).filter(([key, value]) => value > 0),
-    );
+    const passesFiltered = Object.entries(passesDestringified)
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      .filter(([_, value]) => (value as number) > 0)
+      .reduce((acc, [key, value]) => ({ ...acc, [key]: value as number }), {});
 
     passes = passesFiltered;
 
@@ -40,22 +39,18 @@ const checkPasses = async (firstTime = false, ourAddress = null) => {
       );
       if (ourAddress) {
         if (hasPass(ourAddress)) {
-          console.log(
-            color("✅ You have an ArFleet:Genesis pass! 🎉", "green"),
-          );
+          console.log(color("✅ You have an ArFleet:Genesis pass! 🎉"));
         } else {
           console.log("");
           console.log(
             color(
               "WARNING: You don't have an ArFleet:Genesis pass to participate in the testnet! 😢",
-              "red",
             ),
           );
           console.log("");
           console.log(
             color(
               "Providers/clients on testnet won't be able to connect to you without a valid pass.",
-              "red",
             ),
           );
           console.log("");
@@ -64,29 +59,26 @@ const checkPasses = async (firstTime = false, ourAddress = null) => {
               "ArFleet:Genesis passes are this asset on Bazar: https://bazar.arweave.dev/#/asset/" +
                 config.passes.address +
                 "",
-              "red",
             ),
           );
           console.log("");
           console.log(
-            color("Send the pass to your address here: " + ourAddress, "red"),
+            color("Send the pass to your address here: " + ourAddress),
           );
         }
       }
     }
-
-    // Success!
   } catch (e) {
     console.error(e);
   }
 };
 
-const hasPass = (address) => {
+const hasPass = (address: string) => {
   hasPassLive(address);
   return passes && passes[address] && passes[address] > 0;
 };
 
-const hasPassLive = async (address) => {
+const hasPassLive = async (address: string) => {
   console.log("Checking passes live...");
   const passAddress = config.passes.address;
 
@@ -106,11 +98,10 @@ const hasPassLive = async (address) => {
   }
 };
 
-const startChecking = async (ourAddress = null) => {
+const startChecking = async (ourAddress: string | null = null) => {
   await checkPasses(true, ourAddress);
 
-  // Leave default value here so it doesn't become 0 if unset
-  setInterval(checkPasses, config.fetchPassesInterval || 5 * MINUTE);
+  setInterval(checkPasses, 5 * MINUTE);
 };
 
 const getPasses = () => {

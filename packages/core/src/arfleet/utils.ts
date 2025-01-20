@@ -1,22 +1,31 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import config from "./config.js";
-const color = (x, c) => x;
+import { defaultCoreConfig as config } from "./config.js";
+const color = (x: string, c: string) => x;
 
+// @ts-ignore
 import { sha256 } from "../helpers/hash.js";
+// @ts-ignore
 import { bufferToHex, concatBuffers } from "../helpers/buf.js";
 
+interface MerkleNode {
+  value: Buffer;
+  left: MerkleNode | null;
+  right: MerkleNode | null;
+}
+
 export default {
-  hashFn: async function (buf) {
+  hashFn: async function (buf: Buffer): Promise<Buffer> {
     return await sha256(buf);
   },
-  hashFnHex: async function (buf) {
+  hashFnHex: async function (buf: Buffer): Promise<string> {
     return bufferToHex(await this.hashFn(buf));
   },
-  merkleDerive: async function (values, digestFn, initial_iteration) {
-    // This is a modified version of https://www.npmjs.com/package/merkle-lib
-    // Modified to defend merkle trees from second preimage attack
+  merkleDerive: async function (
+    values: Buffer[],
+    digestFn: (data: Buffer) => Promise<Buffer>,
+    initial_iteration: boolean,
+  ): Promise<Buffer[]> {
     const length = values.length;
-    const results = [];
+    const results: Buffer[] = [];
 
     for (let i = 0; i < length; i += 2) {
       const left = values[i];
@@ -30,14 +39,15 @@ export default {
 
     return results;
   },
-  merkle: async function (values, digestFn) {
+  merkle: async function (
+    values: Buffer[],
+    digestFn: (data: Buffer) => Promise<Buffer>,
+  ): Promise<Buffer[]> {
     if (!Array.isArray(values)) throw TypeError("Expected values Array");
     if (typeof digestFn !== "function")
       throw TypeError("Expected digest Function");
 
-    // if (values.length === 1) return values.concat() // We don't do this because we would mess up format length
-
-    const levels = [values];
+    const levels: Buffer[][] = [values];
     let level = values;
     let initial_iteration = true;
 
@@ -50,23 +60,32 @@ export default {
 
     return [...levels].flat();
   },
-  merkleDeriveFull: async function (values, digestFn, initial_iteration) {
-    // This is a modified version of https://www.npmjs.com/package/merkle-lib
-    // Modified to defend merkle trees from second preimage attack
+  merkleDeriveFull: async function (
+    values: MerkleNode[],
+    digestFn: (data: Buffer) => Promise<Buffer>,
+    initial_iteration: boolean,
+  ): Promise<MerkleNode[]> {
     const length = values.length;
-    const results = [];
+    const results: MerkleNode[] = [];
 
     for (let i = 0; i < length; i += 2) {
       const left = values[i];
       const right = i + 1 === length ? left : values[i + 1];
       const data = initial_iteration
-        ? concatBuffers([new Uint8Array([0x00]), left.value, right.value])
-        : concatBuffers([left.value, right.value]);
+        ? concatBuffers([
+            new Uint8Array([0x00]),
+            left?.value ?? Buffer.alloc(0),
+            right?.value ?? Buffer.alloc(0),
+          ])
+        : concatBuffers([
+            left?.value ?? Buffer.alloc(0),
+            right?.value ?? Buffer.alloc(0),
+          ]);
 
-      const node = {
+      const node: MerkleNode = {
         value: await digestFn(data),
-        left: left,
-        right: right,
+        left: left ?? null,
+        right: right ?? null,
       };
 
       results.push(node);
@@ -74,49 +93,53 @@ export default {
 
     return results;
   },
-  merkleFull: async function (valuesBin, digestFn) {
+  merkleFull: async function (
+    valuesBin: Buffer[],
+    digestFn: (data: Buffer) => Promise<Buffer>,
+  ): Promise<MerkleNode> {
     if (!Array.isArray(valuesBin)) throw TypeError("Expected values Array");
     if (typeof digestFn !== "function")
       throw TypeError("Expected digest Function");
 
-    // if (values.length === 1) return values.concat() // We don't do this because we would mess up format length
+    let values: MerkleNode[] = valuesBin.map((value) => ({
+      value,
+      left: null,
+      right: null,
+    }));
 
-    let values = [];
-    for (let i = 0; i < valuesBin.length; i++) {
-      values.push({ value: valuesBin[i], left: null, right: null });
-    }
-
-    const levels = [values];
+    const levels: MerkleNode[][] = [values];
     let level = values;
     let initial_iteration = true;
 
     do {
       level = await this.merkleDeriveFull(level, digestFn, initial_iteration);
-      // console.log('level', level);
       levels.push(level);
       initial_iteration = false;
     } while (level.length > 1);
 
-    // verify that only one is left
     if (level.length !== 1) {
       throw new Error("Merkle tree is not valid");
     }
 
-    return level[0];
+    return level[0] as MerkleNode;
   },
-  merkleFullBinToHex: async function (node) {
+  merkleFullBinToHex: async function (node: MerkleNode): Promise<{
+    value: string;
+    left: any;
+    right: any;
+  }> {
     return {
       value: node.value.toString("hex"),
       left: node.left ? await this.merkleFullBinToHex(node.left) : null,
       right: node.right ? await this.merkleFullBinToHex(node.right) : null,
     };
   },
-  printTree: function (tree, level = 0) {
+  printTree: function (tree: MerkleNode, level = 0): string {
     let result = "";
     for (let i = 0; i < level; i++) {
       result += "  ";
     }
-    result += tree.value + "\n";
+    result += tree.value.toString("hex") + "\n";
     if (tree.left) {
       result += this.printTree(tree.left, level + 1);
     } else {
@@ -135,17 +158,20 @@ export default {
     }
     return result;
   },
-  normalizeHeaders(headers) {
-    const normalized = {};
+  normalizeHeaders(headers: { [key: string]: string }): {
+    [key: string]: string;
+  } {
+    const normalized: { [key: string]: string } = {};
     for (const key in headers) {
-      normalized[key.toLowerCase()] = headers[key];
+      normalized[key.toLowerCase()] = headers[key] ?? "";
     }
     return normalized;
   },
-  xorBuffersInPlace: function (a, b) {
+  xorBuffersInPlace: function (a: Buffer, b: Buffer): Buffer {
     var length = Math.min(a.length, b.length);
     for (var i = 0; i < length; ++i) {
-      a[i] = a[i] ^ b[i];
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      a[i] = a[i]! ^ b[i]!;
     }
     return a;
   },
