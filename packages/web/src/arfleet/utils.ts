@@ -1,4 +1,4 @@
-import { defaultCoreConfig as config } from "./config.js";
+import { defaultCoreConfig as config } from "@arfleet/core";
 const color = (x: string, c: string) => x;
 
 // @ts-ignore
