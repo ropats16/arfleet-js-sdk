@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+// @ts-ignore
 import {
   defaultCoreConfig,
   KB,
@@ -17,7 +17,75 @@ import {
   YEAR,
 } from "@arfleet/core";
 
-const defaultConfig = {
+import type { CoreConfig } from "@arfleet/core";
+
+interface ServerConfig {
+  host: string;
+  port: number;
+}
+
+interface ClientConfig {
+  defaultDatadir: string;
+  apiServer: ServerConfig;
+  defaultDesiredRedundancy: number;
+  defaultDesiredStorageDuration: number;
+  fetchAnnouncementsInterval: number;
+  defaultMaxChallengeDuration: number;
+}
+
+interface ProviderConfig {
+  defaultDatadir: string;
+  apiServer: ServerConfig;
+  publicServer: ServerConfig;
+  defaultStorageCapacity: number;
+  defaultStoragePriceDeal: number;
+  defaultStoragePriceUploadKBSec: number;
+  defaultMinStorageDuration: number;
+  defaultMaxStorageDuration: number;
+  defaultMinChallengeDuration: number;
+}
+
+interface DBConfig {
+  define: {
+    underscored: boolean;
+    timestamps: boolean;
+    createdAt: string;
+    updatedAt: string;
+  };
+  dialect: string;
+  storage: string;
+  transactionType: string;
+  retry: {
+    max: number;
+  };
+  enable_db_logging: boolean;
+}
+
+interface Config
+  extends Pick<
+    CoreConfig,
+    | "marketplace"
+    | "aoScheduler"
+    | "aosModule"
+    | "defaultToken"
+    | "defaultTokenDecimals"
+    | "defaultTokenSymbol"
+    | "passes"
+    | "aoConfig"
+    | "rsa_encryption"
+  > {
+  walletPath: string;
+  client: ClientConfig;
+  provider: ProviderConfig;
+  db: DBConfig;
+  chunkSize: number;
+  _chunkSize: number;
+  chunkinfoPrologue: string;
+  directoryPrologue: string;
+  encryptedChunkPrologue: string;
+}
+
+export const defaultConfig: Config = {
   walletPath: "wallet.json",
   client: {
     defaultDatadir: "~/.arfleet-client",
